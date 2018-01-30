@@ -12,6 +12,7 @@
       project: "reporting",
       dataset: "usage",
       table: "collector",
+      kubeLegoEmail: "jlewi@google.com",
     },
   },
 }

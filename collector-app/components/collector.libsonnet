@@ -1,5 +1,6 @@
 {
   parts(namespace):: {
+    local hostName = "usage-collector.kubeflow.org",
     all(ipName, project, dataset, table):: [
       $.parts(namespace).service,
       $.parts(namespace).ingress(ipName),
@@ -98,6 +99,7 @@
       metadata: {
         annotations: {
           "kubernetes.io/ingress.global-static-ip-name": ipName,
+          "kubernetes.io/tls-acme": "true",
         },
         labels: {
           app: "spartakus-collector",
@@ -106,15 +108,30 @@
         namespace: namespace,
       },
       spec: {
-        backend: {
-          serviceName: "spartakus-collector",
-          servicePort: "http",
-        },
-        tls: [
+        "rules": [
           {
-            secretName: "ssl",
-          },
-        ],
+            "host": hostName,
+            "http": {
+              "paths": [
+                {
+                  "backend": {
+                    "serviceName": "spartakus-collector", 
+                    "servicePort": "http"
+                  }, 
+                  "path": "/*"
+                }
+              ]
+            }
+          }
+        ], 
+        "tls": [
+          {
+            "hosts": [
+              hostName,
+            ], 
+            "secretName": "spartakus-collector-tls"
+          }
+        ]
       },
     },  // ingress
 
