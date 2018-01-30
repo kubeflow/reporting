@@ -108,30 +108,30 @@
         namespace: namespace,
       },
       spec: {
-        "rules": [
+        rules: [
           {
-            "host": hostName,
-            "http": {
-              "paths": [
+            host: hostName,
+            http: {
+              paths: [
                 {
-                  "backend": {
-                    "serviceName": "spartakus-collector", 
-                    "servicePort": "http"
-                  }, 
-                  "path": "/*"
-                }
-              ]
-            }
-          }
-        ], 
-        "tls": [
+                  backend: {
+                    serviceName: "spartakus-collector",
+                    servicePort: "http",
+                  },
+                  path: "/*",
+                },
+              ],
+            },
+          },
+        ],
+        tls: [
           {
-            "hosts": [
+            hosts: [
               hostName,
-            ], 
-            "secretName": "spartakus-collector-tls"
-          }
-        ]
+            ],
+            secretName: "spartakus-collector-tls",
+          },
+        ],
       },
     },  // ingress
 
