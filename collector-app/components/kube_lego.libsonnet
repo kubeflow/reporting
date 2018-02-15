@@ -5,6 +5,7 @@
       $.parts(namespace).deployment,
       $.parts(namespace).role,
       $.parts(namespace).roleBinding,
+      $.parts(namespace).service,
       $.parts(namespace).serviceAccount,
     ],
 
@@ -97,11 +98,15 @@
       ],
     },  // roleBinding
 
+    // TODO(jlewi): This isn't actually used since we set the environment variables directly 
+    // on the deloyment.
     configMap(email):: {
       apiVersion: "v1",
       data: {
         "lego.email": email,
-        "lego.url": "https://acme-v01.api.letsencrypt.org/directory",
+        // TODO(jlewi): Switch to prod endpoint once its working
+        // "lego.url": "https://acme-v01.api.letsencrypt.org/directory",
+        "lego.url": "https://acme-staging.api.letsencrypt.org/directory",
       },
       kind: "ConfigMap",
       metadata: {
@@ -135,21 +140,11 @@
                   },
                   {
                     name: "LEGO_EMAIL",
-                    valueFrom: {
-                      configMapKeyRef: {
-                        key: "lego.email",
-                        name: "kube-lego",
-                      },
-                    },
+                    value: "jlewi@google.com",
                   },
                   {
                     name: "LEGO_URL",
-                    valueFrom: {
-                      configMapKeyRef: {
-                        key: "lego.url",
-                        name: "kube-lego",
-                      },
-                    },
+                    value: "https://acme-v01.api.letsencrypt.org/directory",
                   },
                   {
                     name: "LEGO_NAMESPACE",
@@ -197,9 +192,33 @@
       kind: "ServiceAccount",
       metadata: {
         name: "kube-lego",
-        namespace: "kube-lego",
+        namespace: namespace,
       },
     },  // serviceAccount
 
+    service:: {
+      apiVersion: "v1",
+      kind: "Service",
+      metadata: {
+        labels: {
+          app: "kube-lego",
+        },
+        name: "kube-lego",
+        namespace: namespace,
+      },
+      spec: {
+        ports: [
+          {
+            name: "http",
+            port: 80,
+            targetPort: 8080,
+          },
+        ],
+        selector: {
+          app: "kube-lego",
+        },
+        type: "NodePort",
+      },
+    },  // service
   },  // parts
 }

@@ -7,12 +7,13 @@
     // Component-level parameters, defined initially from 'ks prototype use ...'
     // Each object below should correspond to a component in the components/ directory
     collector:: {
-      ipName: "usage-collector.kubeflow.org",
-      namespace: "collector",
-      project: "reporting",
       dataset: "usage",
-      table: "collector",
+      fqdn: "stats-collector.kubeflow.org",
+      ipName: "stats-collector",
       kubeLegoEmail: "jlewi@google.com",
+      namespace: "collector",
+      project: "kubeflow-usage",
+      table: "collector",
     },
   },
 }

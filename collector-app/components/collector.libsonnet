@@ -1,9 +1,8 @@
 {
   parts(namespace):: {
-    local hostName = "usage-collector.kubeflow.org",
-    all(ipName, project, dataset, table):: [
+    all(fqdn, ipName, project, dataset, table):: [
       $.parts(namespace).service,
-      $.parts(namespace).ingress(ipName),
+      $.parts(namespace).ingress(fqdn, ipName),
       $.parts(namespace).collector(project, dataset, table),
     ],
 
@@ -92,8 +91,9 @@
       },
     },  // collector
 
+    // fqdn Fully qualified domain name for the service.
     // ipName name of the GCP static ip to use.
-    ingress(ipName):: {
+    ingress(fqdn, ipName):: {
       apiVersion: "extensions/v1beta1",
       kind: "Ingress",
       metadata: {
@@ -110,9 +110,16 @@
       spec: {
         rules: [
           {
-            host: hostName,
+            host: fqdn,
             http: {
               paths: [
+                {
+                  backend: {
+                    serviceName: "kube-lego",
+                    servicePort: "http",
+                  },
+                  path: "/.well-known/*",
+                },
                 {
                   backend: {
                     serviceName: "spartakus-collector",
@@ -127,7 +134,7 @@
         tls: [
           {
             hosts: [
-              hostName,
+              fqdn,
             ],
             secretName: "spartakus-collector-tls",
           },

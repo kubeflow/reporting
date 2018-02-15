@@ -6,6 +6,6 @@ local lego = import 'kube_lego.libsonnet';
 local namespace = params.namespace;
 
 std.prune(k.core.v1.list.new(
-  collector.parts(namespace).all(params.ipName, params.project, params.dataset, params.table) +
+  collector.parts(namespace).all(params.fqdn, params.ipName, params.project, params.dataset, params.table) +
   lego.parts(namespace).all(params.kubeLegoEmail),
 ))
