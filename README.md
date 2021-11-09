@@ -1,3 +1,9 @@
+## :warning: **kubeflow/reporting is not maintained**
+
+This repository has been deprecated, and will be [archived](https://github.com/kubeflow/community/issues/479) soon (Nov 30th, 2021). 
+
+
+
 # Kubeflow Usage Reporting
 
 This repository is devoted to collection and analysis of Kubeflow usage.
